@@ -1,0 +1,1505 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/MarkerCluster.css">
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>Carte interactive_FP</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet-svg-shape-markers.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-tilelayer-wmts.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
+        <script src="data/Limitecommunale_2.js"></script>
+        <script src="data/Coursdeau_3.js"></script>
+        <script src="data/Obstaclescoulement_4.js"></script>
+        <script src="data/Pchelectrique_Brochet_FPI_5.js"></script>
+        <script src="data/Pchelectrique_Truite_FPI_6.js"></script>
+        <script src="data/Pchelectrique_Sandre_FPI_7.js"></script>
+        <script src="data/Rservedepche_FPI_8.js"></script>
+        <script src="data/Dtectionparcours_FP_9.js"></script>
+        <script src="data/Parcourstruites_FPI_10.js"></script>
+        <script src="data/Parcourscarnassiers_FPI_11.js"></script>
+        <script src="data/Capturesautres_FP_12.js"></script>
+        <script src="data/Capturesbrochet_FP_13.js"></script>
+        <script src="data/Capturestruite_FP_14.js"></script>
+        <script src="data/Capturessandre_FP_15.js"></script>
+        <script src="data/Inventairegnrale_FP_16.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+            map.setMaxBounds(map.getBounds());
+        }
+        var layer_GoogleSatellite_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_GoogleSatellite_0;
+        map.addLayer(layer_GoogleSatellite_0);
+        var layer_CartesIGN_1 = L.tileLayer.wmts('https://wxs.ign.fr/pratique/geoportail/wmts?SERVICE=WMTS&REQUEST=GetCapabilities', {
+            layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+            tilematrixSet: 'PM',
+            format: 'image/jpeg',
+            style: 'normal',
+            uppercase: true,
+            transparent: true,
+            continuousWorld : true,
+            opacity: 1.0,
+            attribution: '',
+        });
+        function pop_Limitecommunale_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['id'] !== null ? Autolinker.link(feature.properties['id'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nom_com'] !== null ? Autolinker.link(feature.properties['nom_com'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nom_com_m'] !== null ? Autolinker.link(feature.properties['nom_com_m'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['insee_com'] !== null ? Autolinker.link(feature.properties['insee_com'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['statut'] !== null ? Autolinker.link(feature.properties['statut'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nom_dep'] !== null ? Autolinker.link(feature.properties['nom_dep'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['insee_dep'] !== null ? Autolinker.link(feature.properties['insee_dep'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Limitecommunale_2_0() {
+            return {
+                pane: 'pane_Limitecommunale_2',
+                opacity: 1,
+                color: 'rgba(232,113,141,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Limitecommunale_2');
+        map.getPane('pane_Limitecommunale_2').style.zIndex = 402;
+        map.getPane('pane_Limitecommunale_2').style['mix-blend-mode'] = 'normal';
+        var layer_Limitecommunale_2 = new L.geoJson(json_Limitecommunale_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Limitecommunale_2',
+            layerName: 'layer_Limitecommunale_2',
+            pane: 'pane_Limitecommunale_2',
+            onEachFeature: pop_Limitecommunale_2,
+            style: style_Limitecommunale_2_0,
+        });
+        bounds_group.addLayer(layer_Limitecommunale_2);
+        function pop_Coursdeau_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['id'] !== null ? Autolinker.link(feature.properties['id'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['code_hydro'] !== null ? Autolinker.link(feature.properties['code_hydro'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['toponyme'] !== null ? Autolinker.link(feature.properties['toponyme'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Coursdeau_3_0() {
+            return {
+                pane: 'pane_Coursdeau_3',
+                opacity: 1,
+                color: 'rgba(48,152,255,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Coursdeau_3');
+        map.getPane('pane_Coursdeau_3').style.zIndex = 403;
+        map.getPane('pane_Coursdeau_3').style['mix-blend-mode'] = 'normal';
+        var layer_Coursdeau_3 = new L.geoJson(json_Coursdeau_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Coursdeau_3',
+            layerName: 'layer_Coursdeau_3',
+            pane: 'pane_Coursdeau_3',
+            onEachFeature: pop_Coursdeau_3,
+            style: style_Coursdeau_3_0,
+        });
+        bounds_group.addLayer(layer_Coursdeau_3);
+        function pop_Obstaclescoulement_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>id</strong><br />' + (feature.properties['id'] !== null ? Autolinker.link(feature.properties['id'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>gml_id</strong><br />' + (feature.properties['gml_id'] !== null ? Autolinker.link(feature.properties['gml_id'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>cdobstecou</strong><br />' + (feature.properties['cdobstecou'] !== null ? Autolinker.link(feature.properties['cdobstecou'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>nomprincip</strong><br />' + (feature.properties['nomprincip'] !== null ? Autolinker.link(feature.properties['nomprincip'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>lbtypeouvr</strong><br />' + (feature.properties['lbtypeouvr'] !== null ? Autolinker.link(feature.properties['lbtypeouvr'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Obstaclescoulement_4_0() {
+            return {
+                pane: 'pane_Obstaclescoulement_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(122,178,155,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Obstaclescoulement_4');
+        map.getPane('pane_Obstaclescoulement_4').style.zIndex = 404;
+        map.getPane('pane_Obstaclescoulement_4').style['mix-blend-mode'] = 'normal';
+        var layer_Obstaclescoulement_4 = new L.geoJson(json_Obstaclescoulement_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Obstaclescoulement_4',
+            layerName: 'layer_Obstaclescoulement_4',
+            pane: 'pane_Obstaclescoulement_4',
+            onEachFeature: pop_Obstaclescoulement_4,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Obstaclescoulement_4_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Obstaclescoulement_4);
+        function pop_Pchelectrique_Brochet_FPI_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">aa_espece</th>\
+                        <td>' + (feature.properties['aa_espece'] !== null ? Autolinker.link(feature.properties['aa_espece'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ab_date</th>\
+                        <td>' + (feature.properties['ab_date'] !== null ? Autolinker.link(feature.properties['ab_date'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ac_nom_statio</th>\
+                        <td>' + (feature.properties['ac_nom_statio'] !== null ? Autolinker.link(feature.properties['ac_nom_statio'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ad_nombre_espece</th>\
+                        <td>' + (feature.properties['ad_nombre_espece'] !== null ? Autolinker.link(feature.properties['ad_nombre_espece'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ae_cdstationm</th>\
+                        <td>' + (feature.properties['ae_cdstationm'] !== null ? Autolinker.link(feature.properties['ae_cdstationm'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">id_cle</th>\
+                        <td>' + (feature.properties['id_cle'] !== null ? Autolinker.link(feature.properties['id_cle'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Pchelectrique_Brochet_FPI_5_0() {
+            return {
+                pane: 'pane_Pchelectrique_Brochet_FPI_5',
+                shape: 'square',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(153,114,192,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Pchelectrique_Brochet_FPI_5');
+        map.getPane('pane_Pchelectrique_Brochet_FPI_5').style.zIndex = 405;
+        map.getPane('pane_Pchelectrique_Brochet_FPI_5').style['mix-blend-mode'] = 'normal';
+        var layer_Pchelectrique_Brochet_FPI_5 = new L.geoJson(json_Pchelectrique_Brochet_FPI_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Pchelectrique_Brochet_FPI_5',
+            layerName: 'layer_Pchelectrique_Brochet_FPI_5',
+            pane: 'pane_Pchelectrique_Brochet_FPI_5',
+            onEachFeature: pop_Pchelectrique_Brochet_FPI_5,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Pchelectrique_Brochet_FPI_5_0(feature));
+            },
+        });
+        var cluster_Pchelectrique_Brochet_FPI_5 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_Pchelectrique_Brochet_FPI_5.addLayer(layer_Pchelectrique_Brochet_FPI_5);
+
+        bounds_group.addLayer(layer_Pchelectrique_Brochet_FPI_5);
+        function pop_Pchelectrique_Truite_FPI_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">aa_espece</th>\
+                        <td>' + (feature.properties['aa_espece'] !== null ? Autolinker.link(feature.properties['aa_espece'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ab_date</th>\
+                        <td>' + (feature.properties['ab_date'] !== null ? Autolinker.link(feature.properties['ab_date'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ac_nom_statio</th>\
+                        <td>' + (feature.properties['ac_nom_statio'] !== null ? Autolinker.link(feature.properties['ac_nom_statio'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ad_nombre_espece</th>\
+                        <td>' + (feature.properties['ad_nombre_espece'] !== null ? Autolinker.link(feature.properties['ad_nombre_espece'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ae_cdstationm</th>\
+                        <td>' + (feature.properties['ae_cdstationm'] !== null ? Autolinker.link(feature.properties['ae_cdstationm'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">id_cle</th>\
+                        <td>' + (feature.properties['id_cle'] !== null ? Autolinker.link(feature.properties['id_cle'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Pchelectrique_Truite_FPI_6_0() {
+            return {
+                pane: 'pane_Pchelectrique_Truite_FPI_6',
+                shape: 'square',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,160,0,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Pchelectrique_Truite_FPI_6');
+        map.getPane('pane_Pchelectrique_Truite_FPI_6').style.zIndex = 406;
+        map.getPane('pane_Pchelectrique_Truite_FPI_6').style['mix-blend-mode'] = 'normal';
+        var layer_Pchelectrique_Truite_FPI_6 = new L.geoJson(json_Pchelectrique_Truite_FPI_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Pchelectrique_Truite_FPI_6',
+            layerName: 'layer_Pchelectrique_Truite_FPI_6',
+            pane: 'pane_Pchelectrique_Truite_FPI_6',
+            onEachFeature: pop_Pchelectrique_Truite_FPI_6,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Pchelectrique_Truite_FPI_6_0(feature));
+            },
+        });
+        var cluster_Pchelectrique_Truite_FPI_6 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_Pchelectrique_Truite_FPI_6.addLayer(layer_Pchelectrique_Truite_FPI_6);
+
+        bounds_group.addLayer(layer_Pchelectrique_Truite_FPI_6);
+        function pop_Pchelectrique_Sandre_FPI_7(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">aa_espece</th>\
+                        <td>' + (feature.properties['aa_espece'] !== null ? Autolinker.link(feature.properties['aa_espece'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ab_date</th>\
+                        <td>' + (feature.properties['ab_date'] !== null ? Autolinker.link(feature.properties['ab_date'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ac_nom_statio</th>\
+                        <td>' + (feature.properties['ac_nom_statio'] !== null ? Autolinker.link(feature.properties['ac_nom_statio'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ad_nombre_espece</th>\
+                        <td>' + (feature.properties['ad_nombre_espece'] !== null ? Autolinker.link(feature.properties['ad_nombre_espece'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ae_cdstationm</th>\
+                        <td>' + (feature.properties['ae_cdstationm'] !== null ? Autolinker.link(feature.properties['ae_cdstationm'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">id_cle</th>\
+                        <td>' + (feature.properties['id_cle'] !== null ? Autolinker.link(feature.properties['id_cle'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Pchelectrique_Sandre_FPI_7_0() {
+            return {
+                pane: 'pane_Pchelectrique_Sandre_FPI_7',
+                shape: 'square',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(242,21,18,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Pchelectrique_Sandre_FPI_7');
+        map.getPane('pane_Pchelectrique_Sandre_FPI_7').style.zIndex = 407;
+        map.getPane('pane_Pchelectrique_Sandre_FPI_7').style['mix-blend-mode'] = 'normal';
+        var layer_Pchelectrique_Sandre_FPI_7 = new L.geoJson(json_Pchelectrique_Sandre_FPI_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Pchelectrique_Sandre_FPI_7',
+            layerName: 'layer_Pchelectrique_Sandre_FPI_7',
+            pane: 'pane_Pchelectrique_Sandre_FPI_7',
+            onEachFeature: pop_Pchelectrique_Sandre_FPI_7,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Pchelectrique_Sandre_FPI_7_0(feature));
+            },
+        });
+        var cluster_Pchelectrique_Sandre_FPI_7 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_Pchelectrique_Sandre_FPI_7.addLayer(layer_Pchelectrique_Sandre_FPI_7);
+
+        bounds_group.addLayer(layer_Pchelectrique_Sandre_FPI_7);
+        function pop_Rservedepche_FPI_8(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>aa_nom</strong><br />' + (feature.properties['aa_nom'] !== null ? Autolinker.link(feature.properties['aa_nom'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>af_commune</strong><br />' + (feature.properties['af_commune'] !== null ? Autolinker.link(feature.properties['af_commune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>ag_troncon</strong><br />' + (feature.properties['ag_troncon'] !== null ? Autolinker.link(feature.properties['ag_troncon'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>bd_observations</strong><br />' + (feature.properties['bd_observations'] !== null ? Autolinker.link(feature.properties['bd_observations'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>ad_source</strong><br />' + (feature.properties['ad_source'] !== null ? Autolinker.link(feature.properties['ad_source'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>ae_id_cle</strong><br />' + (feature.properties['ae_id_cle'] !== null ? Autolinker.link(feature.properties['ae_id_cle'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Rservedepche_FPI_8_0() {
+            return {
+                pane: 'pane_Rservedepche_FPI_8',
+                opacity: 1,
+                color: 'rgba(242,21,18,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Rservedepche_FPI_8');
+        map.getPane('pane_Rservedepche_FPI_8').style.zIndex = 408;
+        map.getPane('pane_Rservedepche_FPI_8').style['mix-blend-mode'] = 'normal';
+        var layer_Rservedepche_FPI_8 = new L.geoJson(json_Rservedepche_FPI_8, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Rservedepche_FPI_8',
+            layerName: 'layer_Rservedepche_FPI_8',
+            pane: 'pane_Rservedepche_FPI_8',
+            onEachFeature: pop_Rservedepche_FPI_8,
+            style: style_Rservedepche_FPI_8_0,
+        });
+        bounds_group.addLayer(layer_Rservedepche_FPI_8);
+        function pop_Dtectionparcours_FP_9(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>bc_poissons_presentes</strong><br />' + (feature.properties['bc_poissons_presentes'] !== null ? Autolinker.link(feature.properties['bc_poissons_presentes'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>aa_nom</strong><br />' + (feature.properties['aa_nom'] !== null ? Autolinker.link(feature.properties['aa_nom'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>af_commune</strong><br />' + (feature.properties['af_commune'] !== null ? Autolinker.link(feature.properties['af_commune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>ag_troncon</strong><br />' + (feature.properties['ag_troncon'] !== null ? Autolinker.link(feature.properties['ag_troncon'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>bd_observations</strong><br />' + (feature.properties['bd_observations'] !== null ? Autolinker.link(feature.properties['bd_observations'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>da_longitude_wgs84</strong><br />' + (feature.properties['da_longitude_wgs84'] !== null ? Autolinker.link(feature.properties['da_longitude_wgs84'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>db_latitude_wgs84</strong><br />' + (feature.properties['db_latitude_wgs84'] !== null ? Autolinker.link(feature.properties['db_latitude_wgs84'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>ae_id_cle</strong><br />' + (feature.properties['ae_id_cle'] !== null ? Autolinker.link(feature.properties['ae_id_cle'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Dtectionparcours_FP_9_0() {
+            return {
+                pane: 'pane_Dtectionparcours_FP_9',
+                shape: 'diamond',
+                radius: 10.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(144,255,211,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Dtectionparcours_FP_9');
+        map.getPane('pane_Dtectionparcours_FP_9').style.zIndex = 409;
+        map.getPane('pane_Dtectionparcours_FP_9').style['mix-blend-mode'] = 'normal';
+        var layer_Dtectionparcours_FP_9 = new L.geoJson(json_Dtectionparcours_FP_9, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Dtectionparcours_FP_9',
+            layerName: 'layer_Dtectionparcours_FP_9',
+            pane: 'pane_Dtectionparcours_FP_9',
+            onEachFeature: pop_Dtectionparcours_FP_9,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Dtectionparcours_FP_9_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Dtectionparcours_FP_9);
+        function pop_Parcourstruites_FPI_10(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>bd_thematique_carte_fpi</strong><br />' + (feature.properties['bd_thematique_carte_fpi'] !== null ? Autolinker.link(feature.properties['bd_thematique_carte_fpi'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>aa_nom</strong><br />' + (feature.properties['aa_nom'] !== null ? Autolinker.link(feature.properties['aa_nom'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>af_commune</strong><br />' + (feature.properties['af_commune'] !== null ? Autolinker.link(feature.properties['af_commune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>ag_troncon</strong><br />' + (feature.properties['ag_troncon'] !== null ? Autolinker.link(feature.properties['ag_troncon'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>ad_source</strong><br />' + (feature.properties['ad_source'] !== null ? Autolinker.link(feature.properties['ad_source'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>bd_observations</strong><br />' + (feature.properties['bd_observations'] !== null ? Autolinker.link(feature.properties['bd_observations'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>ba_lien_internet</strong><br />' + (feature.properties['ba_lien_internet'] !== null ? Autolinker.link(feature.properties['ba_lien_internet'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>da_longitude_wgs84</strong><br />' + (feature.properties['da_longitude_wgs84'] !== null ? Autolinker.link(feature.properties['da_longitude_wgs84'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>db_latitude_wgs84</strong><br />' + (feature.properties['db_latitude_wgs84'] !== null ? Autolinker.link(feature.properties['db_latitude_wgs84'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>ae_id_cle</strong><br />' + (feature.properties['ae_id_cle'] !== null ? Autolinker.link(feature.properties['ae_id_cle'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Parcourstruites_FPI_10_0() {
+            return {
+                pane: 'pane_Parcourstruites_FPI_10',
+                shape: 'diamond',
+                radius: 10.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,160,0,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Parcourstruites_FPI_10');
+        map.getPane('pane_Parcourstruites_FPI_10').style.zIndex = 410;
+        map.getPane('pane_Parcourstruites_FPI_10').style['mix-blend-mode'] = 'normal';
+        var layer_Parcourstruites_FPI_10 = new L.geoJson(json_Parcourstruites_FPI_10, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Parcourstruites_FPI_10',
+            layerName: 'layer_Parcourstruites_FPI_10',
+            pane: 'pane_Parcourstruites_FPI_10',
+            onEachFeature: pop_Parcourstruites_FPI_10,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Parcourstruites_FPI_10_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Parcourstruites_FPI_10);
+        function pop_Parcourscarnassiers_FPI_11(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>bd_thematique_carte_fpi</strong><br />' + (feature.properties['bd_thematique_carte_fpi'] !== null ? Autolinker.link(feature.properties['bd_thematique_carte_fpi'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>aa_nom</strong><br />' + (feature.properties['aa_nom'] !== null ? Autolinker.link(feature.properties['aa_nom'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>af_commune</strong><br />' + (feature.properties['af_commune'] !== null ? Autolinker.link(feature.properties['af_commune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>ag_troncon</strong><br />' + (feature.properties['ag_troncon'] !== null ? Autolinker.link(feature.properties['ag_troncon'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>ad_source</strong><br />' + (feature.properties['ad_source'] !== null ? Autolinker.link(feature.properties['ad_source'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>bd_observations</strong><br />' + (feature.properties['bd_observations'] !== null ? Autolinker.link(feature.properties['bd_observations'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>ba_lien_internet</strong><br />' + (feature.properties['ba_lien_internet'] !== null ? Autolinker.link(feature.properties['ba_lien_internet'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>da_longitude_wgs84</strong><br />' + (feature.properties['da_longitude_wgs84'] !== null ? Autolinker.link(feature.properties['da_longitude_wgs84'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>db_latitude_wgs84</strong><br />' + (feature.properties['db_latitude_wgs84'] !== null ? Autolinker.link(feature.properties['db_latitude_wgs84'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>ae_id_cle</strong><br />' + (feature.properties['ae_id_cle'] !== null ? Autolinker.link(feature.properties['ae_id_cle'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Parcourscarnassiers_FPI_11_0() {
+            return {
+                pane: 'pane_Parcourscarnassiers_FPI_11',
+                shape: 'diamond',
+                radius: 10.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(242,21,18,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Parcourscarnassiers_FPI_11');
+        map.getPane('pane_Parcourscarnassiers_FPI_11').style.zIndex = 411;
+        map.getPane('pane_Parcourscarnassiers_FPI_11').style['mix-blend-mode'] = 'normal';
+        var layer_Parcourscarnassiers_FPI_11 = new L.geoJson(json_Parcourscarnassiers_FPI_11, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Parcourscarnassiers_FPI_11',
+            layerName: 'layer_Parcourscarnassiers_FPI_11',
+            pane: 'pane_Parcourscarnassiers_FPI_11',
+            onEachFeature: pop_Parcourscarnassiers_FPI_11,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Parcourscarnassiers_FPI_11_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Parcourscarnassiers_FPI_11);
+        function pop_Capturesautres_FP_12(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">aa_nom</th>\
+                        <td>' + (feature.properties['aa_nom'] !== null ? Autolinker.link(feature.properties['aa_nom'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ab_date</th>\
+                        <td>' + (feature.properties['ab_date'] !== null ? Autolinker.link(feature.properties['ab_date'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ac_annee</th>\
+                        <td>' + (feature.properties['ac_annee'] !== null ? Autolinker.link(feature.properties['ac_annee'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">af_commune</th>\
+                        <td>' + (feature.properties['af_commune'] !== null ? Autolinker.link(feature.properties['af_commune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ag_troncon</th>\
+                        <td>' + (feature.properties['ag_troncon'] !== null ? Autolinker.link(feature.properties['ag_troncon'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ba_prise</th>\
+                        <td>' + (feature.properties['ba_prise'] !== null ? Autolinker.link(feature.properties['ba_prise'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bb_accompagnant</th>\
+                        <td>' + (feature.properties['bb_accompagnant'] !== null ? Autolinker.link(feature.properties['bb_accompagnant'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bc_prise_accompagnant</th>\
+                        <td>' + (feature.properties['bc_prise_accompagnant'] !== null ? Autolinker.link(feature.properties['bc_prise_accompagnant'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bd_technique</th>\
+                        <td>' + (feature.properties['bd_technique'] !== null ? Autolinker.link(feature.properties['bd_technique'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">be_materiel</th>\
+                        <td>' + (feature.properties['be_materiel'] !== null ? Autolinker.link(feature.properties['be_materiel'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bf_observations</th>\
+                        <td>' + (feature.properties['bf_observations'] !== null ? Autolinker.link(feature.properties['bf_observations'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ca_temps_passe</th>\
+                        <td>' + (feature.properties['ca_temps_passe'] !== null ? Autolinker.link(feature.properties['ca_temps_passe'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cb_meteo</th>\
+                        <td>' + (feature.properties['cb_meteo'] !== null ? Autolinker.link(feature.properties['cb_meteo'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cc_rive</th>\
+                        <td>' + (feature.properties['cc_rive'] !== null ? Autolinker.link(feature.properties['cc_rive'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cd_nom_lune</th>\
+                        <td>' + (feature.properties['cd_nom_lune'] !== null ? Autolinker.link(feature.properties['cd_nom_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ce_age_lune</th>\
+                        <td>' + (feature.properties['ce_age_lune'] !== null ? Autolinker.link(feature.properties['ce_age_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cf_visibilite_lune</th>\
+                        <td>' + (feature.properties['cf_visibilite_lune'] !== null ? Autolinker.link(feature.properties['cf_visibilite_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cg_phase_lune</th>\
+                        <td>' + (feature.properties['cg_phase_lune'] !== null ? Autolinker.link(feature.properties['cg_phase_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">da_longitude_wgs84</th>\
+                        <td>' + (feature.properties['da_longitude_wgs84'] !== null ? Autolinker.link(feature.properties['da_longitude_wgs84'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">db_latitude_wgs84</th>\
+                        <td>' + (feature.properties['db_latitude_wgs84'] !== null ? Autolinker.link(feature.properties['db_latitude_wgs84'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ae_id_cle</th>\
+                        <td>' + (feature.properties['ae_id_cle'] !== null ? Autolinker.link(feature.properties['ae_id_cle'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Capturesautres_FP_12_0() {
+            return {
+                pane: 'pane_Capturesautres_FP_12',
+                radius: 14.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(144,255,211,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Capturesautres_FP_12');
+        map.getPane('pane_Capturesautres_FP_12').style.zIndex = 412;
+        map.getPane('pane_Capturesautres_FP_12').style['mix-blend-mode'] = 'normal';
+        var layer_Capturesautres_FP_12 = new L.geoJson(json_Capturesautres_FP_12, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Capturesautres_FP_12',
+            layerName: 'layer_Capturesautres_FP_12',
+            pane: 'pane_Capturesautres_FP_12',
+            onEachFeature: pop_Capturesautres_FP_12,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Capturesautres_FP_12_0(feature));
+            },
+        });
+        var cluster_Capturesautres_FP_12 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_Capturesautres_FP_12.addLayer(layer_Capturesautres_FP_12);
+
+        bounds_group.addLayer(layer_Capturesautres_FP_12);
+        function pop_Capturesbrochet_FP_13(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">aa_nom</th>\
+                        <td>' + (feature.properties['aa_nom'] !== null ? Autolinker.link(feature.properties['aa_nom'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ab_date</th>\
+                        <td>' + (feature.properties['ab_date'] !== null ? Autolinker.link(feature.properties['ab_date'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ac_annee</th>\
+                        <td>' + (feature.properties['ac_annee'] !== null ? Autolinker.link(feature.properties['ac_annee'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">af_commune</th>\
+                        <td>' + (feature.properties['af_commune'] !== null ? Autolinker.link(feature.properties['af_commune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ag_troncon</th>\
+                        <td>' + (feature.properties['ag_troncon'] !== null ? Autolinker.link(feature.properties['ag_troncon'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ba_prise</th>\
+                        <td>' + (feature.properties['ba_prise'] !== null ? Autolinker.link(feature.properties['ba_prise'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bb_accompagnant</th>\
+                        <td>' + (feature.properties['bb_accompagnant'] !== null ? Autolinker.link(feature.properties['bb_accompagnant'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bc_prise_accompagnant</th>\
+                        <td>' + (feature.properties['bc_prise_accompagnant'] !== null ? Autolinker.link(feature.properties['bc_prise_accompagnant'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bd_technique</th>\
+                        <td>' + (feature.properties['bd_technique'] !== null ? Autolinker.link(feature.properties['bd_technique'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">be_materiel</th>\
+                        <td>' + (feature.properties['be_materiel'] !== null ? Autolinker.link(feature.properties['be_materiel'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bf_observations</th>\
+                        <td>' + (feature.properties['bf_observations'] !== null ? Autolinker.link(feature.properties['bf_observations'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ca_temps_passe</th>\
+                        <td>' + (feature.properties['ca_temps_passe'] !== null ? Autolinker.link(feature.properties['ca_temps_passe'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cb_meteo</th>\
+                        <td>' + (feature.properties['cb_meteo'] !== null ? Autolinker.link(feature.properties['cb_meteo'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cc_rive</th>\
+                        <td>' + (feature.properties['cc_rive'] !== null ? Autolinker.link(feature.properties['cc_rive'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cd_nom_lune</th>\
+                        <td>' + (feature.properties['cd_nom_lune'] !== null ? Autolinker.link(feature.properties['cd_nom_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ce_age_lune</th>\
+                        <td>' + (feature.properties['ce_age_lune'] !== null ? Autolinker.link(feature.properties['ce_age_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cf_visibilite_lune</th>\
+                        <td>' + (feature.properties['cf_visibilite_lune'] !== null ? Autolinker.link(feature.properties['cf_visibilite_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cg_phase_lune</th>\
+                        <td>' + (feature.properties['cg_phase_lune'] !== null ? Autolinker.link(feature.properties['cg_phase_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">da_longitude_wgs84</th>\
+                        <td>' + (feature.properties['da_longitude_wgs84'] !== null ? Autolinker.link(feature.properties['da_longitude_wgs84'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">db_latitude_wgs84</th>\
+                        <td>' + (feature.properties['db_latitude_wgs84'] !== null ? Autolinker.link(feature.properties['db_latitude_wgs84'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ae_id_cle</th>\
+                        <td>' + (feature.properties['ae_id_cle'] !== null ? Autolinker.link(feature.properties['ae_id_cle'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Capturesbrochet_FP_13_0() {
+            return {
+                pane: 'pane_Capturesbrochet_FP_13',
+                radius: 14.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(183,111,255,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Capturesbrochet_FP_13');
+        map.getPane('pane_Capturesbrochet_FP_13').style.zIndex = 413;
+        map.getPane('pane_Capturesbrochet_FP_13').style['mix-blend-mode'] = 'normal';
+        var layer_Capturesbrochet_FP_13 = new L.geoJson(json_Capturesbrochet_FP_13, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Capturesbrochet_FP_13',
+            layerName: 'layer_Capturesbrochet_FP_13',
+            pane: 'pane_Capturesbrochet_FP_13',
+            onEachFeature: pop_Capturesbrochet_FP_13,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Capturesbrochet_FP_13_0(feature));
+            },
+        });
+        var cluster_Capturesbrochet_FP_13 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_Capturesbrochet_FP_13.addLayer(layer_Capturesbrochet_FP_13);
+
+        bounds_group.addLayer(layer_Capturesbrochet_FP_13);
+        cluster_Capturesbrochet_FP_13.addTo(map);
+        function pop_Capturestruite_FP_14(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">aa_nom</th>\
+                        <td>' + (feature.properties['aa_nom'] !== null ? Autolinker.link(feature.properties['aa_nom'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ab_date</th>\
+                        <td>' + (feature.properties['ab_date'] !== null ? Autolinker.link(feature.properties['ab_date'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ac_annee</th>\
+                        <td>' + (feature.properties['ac_annee'] !== null ? Autolinker.link(feature.properties['ac_annee'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">af_commune</th>\
+                        <td>' + (feature.properties['af_commune'] !== null ? Autolinker.link(feature.properties['af_commune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ag_troncon</th>\
+                        <td>' + (feature.properties['ag_troncon'] !== null ? Autolinker.link(feature.properties['ag_troncon'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ba_prise</th>\
+                        <td>' + (feature.properties['ba_prise'] !== null ? Autolinker.link(feature.properties['ba_prise'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bb_accompagnant</th>\
+                        <td>' + (feature.properties['bb_accompagnant'] !== null ? Autolinker.link(feature.properties['bb_accompagnant'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bc_prise_accompagnant</th>\
+                        <td>' + (feature.properties['bc_prise_accompagnant'] !== null ? Autolinker.link(feature.properties['bc_prise_accompagnant'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bd_technique</th>\
+                        <td>' + (feature.properties['bd_technique'] !== null ? Autolinker.link(feature.properties['bd_technique'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">be_materiel</th>\
+                        <td>' + (feature.properties['be_materiel'] !== null ? Autolinker.link(feature.properties['be_materiel'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bf_observations</th>\
+                        <td>' + (feature.properties['bf_observations'] !== null ? Autolinker.link(feature.properties['bf_observations'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ca_temps_passe</th>\
+                        <td>' + (feature.properties['ca_temps_passe'] !== null ? Autolinker.link(feature.properties['ca_temps_passe'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cb_meteo</th>\
+                        <td>' + (feature.properties['cb_meteo'] !== null ? Autolinker.link(feature.properties['cb_meteo'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cc_rive</th>\
+                        <td>' + (feature.properties['cc_rive'] !== null ? Autolinker.link(feature.properties['cc_rive'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cd_nom_lune</th>\
+                        <td>' + (feature.properties['cd_nom_lune'] !== null ? Autolinker.link(feature.properties['cd_nom_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ce_age_lune</th>\
+                        <td>' + (feature.properties['ce_age_lune'] !== null ? Autolinker.link(feature.properties['ce_age_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cf_visibilite_lune</th>\
+                        <td>' + (feature.properties['cf_visibilite_lune'] !== null ? Autolinker.link(feature.properties['cf_visibilite_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cg_phase_lune</th>\
+                        <td>' + (feature.properties['cg_phase_lune'] !== null ? Autolinker.link(feature.properties['cg_phase_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">da_longitude_wgs84</th>\
+                        <td>' + (feature.properties['da_longitude_wgs84'] !== null ? Autolinker.link(feature.properties['da_longitude_wgs84'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">db_latitude_wgs84</th>\
+                        <td>' + (feature.properties['db_latitude_wgs84'] !== null ? Autolinker.link(feature.properties['db_latitude_wgs84'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ae_id_cle</th>\
+                        <td>' + (feature.properties['ae_id_cle'] !== null ? Autolinker.link(feature.properties['ae_id_cle'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Capturestruite_FP_14_0() {
+            return {
+                pane: 'pane_Capturestruite_FP_14',
+                radius: 14.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,160,0,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Capturestruite_FP_14');
+        map.getPane('pane_Capturestruite_FP_14').style.zIndex = 414;
+        map.getPane('pane_Capturestruite_FP_14').style['mix-blend-mode'] = 'normal';
+        var layer_Capturestruite_FP_14 = new L.geoJson(json_Capturestruite_FP_14, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Capturestruite_FP_14',
+            layerName: 'layer_Capturestruite_FP_14',
+            pane: 'pane_Capturestruite_FP_14',
+            onEachFeature: pop_Capturestruite_FP_14,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Capturestruite_FP_14_0(feature));
+            },
+        });
+        var cluster_Capturestruite_FP_14 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_Capturestruite_FP_14.addLayer(layer_Capturestruite_FP_14);
+
+        bounds_group.addLayer(layer_Capturestruite_FP_14);
+        cluster_Capturestruite_FP_14.addTo(map);
+        function pop_Capturessandre_FP_15(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">aa_nom</th>\
+                        <td>' + (feature.properties['aa_nom'] !== null ? Autolinker.link(feature.properties['aa_nom'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ab_date</th>\
+                        <td>' + (feature.properties['ab_date'] !== null ? Autolinker.link(feature.properties['ab_date'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ac_annee</th>\
+                        <td>' + (feature.properties['ac_annee'] !== null ? Autolinker.link(feature.properties['ac_annee'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">af_commune</th>\
+                        <td>' + (feature.properties['af_commune'] !== null ? Autolinker.link(feature.properties['af_commune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ag_troncon</th>\
+                        <td>' + (feature.properties['ag_troncon'] !== null ? Autolinker.link(feature.properties['ag_troncon'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ba_prise</th>\
+                        <td>' + (feature.properties['ba_prise'] !== null ? Autolinker.link(feature.properties['ba_prise'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bb_accompagnant</th>\
+                        <td>' + (feature.properties['bb_accompagnant'] !== null ? Autolinker.link(feature.properties['bb_accompagnant'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bc_prise_accompagnant</th>\
+                        <td>' + (feature.properties['bc_prise_accompagnant'] !== null ? Autolinker.link(feature.properties['bc_prise_accompagnant'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bd_technique</th>\
+                        <td>' + (feature.properties['bd_technique'] !== null ? Autolinker.link(feature.properties['bd_technique'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">be_materiel</th>\
+                        <td>' + (feature.properties['be_materiel'] !== null ? Autolinker.link(feature.properties['be_materiel'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bf_observations</th>\
+                        <td>' + (feature.properties['bf_observations'] !== null ? Autolinker.link(feature.properties['bf_observations'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ca_temps_passe</th>\
+                        <td>' + (feature.properties['ca_temps_passe'] !== null ? Autolinker.link(feature.properties['ca_temps_passe'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cb_meteo</th>\
+                        <td>' + (feature.properties['cb_meteo'] !== null ? Autolinker.link(feature.properties['cb_meteo'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cc_rive</th>\
+                        <td>' + (feature.properties['cc_rive'] !== null ? Autolinker.link(feature.properties['cc_rive'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cd_nom_lune</th>\
+                        <td>' + (feature.properties['cd_nom_lune'] !== null ? Autolinker.link(feature.properties['cd_nom_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ce_age_lune</th>\
+                        <td>' + (feature.properties['ce_age_lune'] !== null ? Autolinker.link(feature.properties['ce_age_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cf_visibilite_lune</th>\
+                        <td>' + (feature.properties['cf_visibilite_lune'] !== null ? Autolinker.link(feature.properties['cf_visibilite_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cg_phase_lune</th>\
+                        <td>' + (feature.properties['cg_phase_lune'] !== null ? Autolinker.link(feature.properties['cg_phase_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">da_longitude_wgs84</th>\
+                        <td>' + (feature.properties['da_longitude_wgs84'] !== null ? Autolinker.link(feature.properties['da_longitude_wgs84'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">db_latitude_wgs84</th>\
+                        <td>' + (feature.properties['db_latitude_wgs84'] !== null ? Autolinker.link(feature.properties['db_latitude_wgs84'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ae_id_cle</th>\
+                        <td>' + (feature.properties['ae_id_cle'] !== null ? Autolinker.link(feature.properties['ae_id_cle'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Capturessandre_FP_15_0() {
+            return {
+                pane: 'pane_Capturessandre_FP_15',
+                radius: 14.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(242,21,18,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Capturessandre_FP_15');
+        map.getPane('pane_Capturessandre_FP_15').style.zIndex = 415;
+        map.getPane('pane_Capturessandre_FP_15').style['mix-blend-mode'] = 'normal';
+        var layer_Capturessandre_FP_15 = new L.geoJson(json_Capturessandre_FP_15, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Capturessandre_FP_15',
+            layerName: 'layer_Capturessandre_FP_15',
+            pane: 'pane_Capturessandre_FP_15',
+            onEachFeature: pop_Capturessandre_FP_15,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Capturessandre_FP_15_0(feature));
+            },
+        });
+        var cluster_Capturessandre_FP_15 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_Capturessandre_FP_15.addLayer(layer_Capturessandre_FP_15);
+
+        bounds_group.addLayer(layer_Capturessandre_FP_15);
+        cluster_Capturessandre_FP_15.addTo(map);
+        function pop_Inventairegnrale_FP_16(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">test non</th>\
+                        <td>' + (feature.properties['aa_nom'] !== null ? Autolinker.link(feature.properties['aa_nom'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ab_date</th>\
+                        <td>' + (feature.properties['ab_date'] !== null ? Autolinker.link(feature.properties['ab_date'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ac_annee</th>\
+                        <td>' + (feature.properties['ac_annee'] !== null ? Autolinker.link(feature.properties['ac_annee'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">af_commune</th>\
+                        <td>' + (feature.properties['af_commune'] !== null ? Autolinker.link(feature.properties['af_commune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ag_troncon</th>\
+                        <td>' + (feature.properties['ag_troncon'] !== null ? Autolinker.link(feature.properties['ag_troncon'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ba_prise</th>\
+                        <td>' + (feature.properties['ba_prise'] !== null ? Autolinker.link(feature.properties['ba_prise'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bb_accompagnant</th>\
+                        <td>' + (feature.properties['bb_accompagnant'] !== null ? Autolinker.link(feature.properties['bb_accompagnant'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bc_prise_accompagnant</th>\
+                        <td>' + (feature.properties['bc_prise_accompagnant'] !== null ? Autolinker.link(feature.properties['bc_prise_accompagnant'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bd_technique</th>\
+                        <td>' + (feature.properties['bd_technique'] !== null ? Autolinker.link(feature.properties['bd_technique'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">be_materiel</th>\
+                        <td>' + (feature.properties['be_materiel'] !== null ? Autolinker.link(feature.properties['be_materiel'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bf_observations</th>\
+                        <td>' + (feature.properties['bf_observations'] !== null ? Autolinker.link(feature.properties['bf_observations'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ca_temps_passe</th>\
+                        <td>' + (feature.properties['ca_temps_passe'] !== null ? Autolinker.link(feature.properties['ca_temps_passe'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cb_meteo</th>\
+                        <td>' + (feature.properties['cb_meteo'] !== null ? Autolinker.link(feature.properties['cb_meteo'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cc_rive</th>\
+                        <td>' + (feature.properties['cc_rive'] !== null ? Autolinker.link(feature.properties['cc_rive'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cd_nom_lune</th>\
+                        <td>' + (feature.properties['cd_nom_lune'] !== null ? Autolinker.link(feature.properties['cd_nom_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ce_age_lune</th>\
+                        <td>' + (feature.properties['ce_age_lune'] !== null ? Autolinker.link(feature.properties['ce_age_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cf_visibilite_lune</th>\
+                        <td>' + (feature.properties['cf_visibilite_lune'] !== null ? Autolinker.link(feature.properties['cf_visibilite_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">cg_phase_lune</th>\
+                        <td>' + (feature.properties['cg_phase_lune'] !== null ? Autolinker.link(feature.properties['cg_phase_lune'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">da_longitude_wgs84</th>\
+                        <td>' + (feature.properties['da_longitude_wgs84'] !== null ? Autolinker.link(feature.properties['da_longitude_wgs84'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">db_latitude_wgs84</th>\
+                        <td>' + (feature.properties['db_latitude_wgs84'] !== null ? Autolinker.link(feature.properties['db_latitude_wgs84'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ae_id_cle</th>\
+                        <td>' + (feature.properties['ae_id_cle'] !== null ? Autolinker.link(feature.properties['ae_id_cle'].toLocaleString(), {truncate: {length: 30, location: 'smart'}}) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Inventairegnrale_FP_16_0() {
+            return {
+                pane: 'pane_Inventairegnrale_FP_16',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(246,232,13,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Inventairegnrale_FP_16');
+        map.getPane('pane_Inventairegnrale_FP_16').style.zIndex = 416;
+        map.getPane('pane_Inventairegnrale_FP_16').style['mix-blend-mode'] = 'normal';
+        var layer_Inventairegnrale_FP_16 = new L.geoJson(json_Inventairegnrale_FP_16, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Inventairegnrale_FP_16',
+            layerName: 'layer_Inventairegnrale_FP_16',
+            pane: 'pane_Inventairegnrale_FP_16',
+            onEachFeature: pop_Inventairegnrale_FP_16,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Inventairegnrale_FP_16_0(feature));
+            },
+        });
+        var cluster_Inventairegnrale_FP_16 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_Inventairegnrale_FP_16.addLayer(layer_Inventairegnrale_FP_16);
+
+        bounds_group.addLayer(layer_Inventairegnrale_FP_16);
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>Carte interactive_FP</h2>';
+            };
+            title.addTo(map);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/Inventairegnrale_FP_16.png" /> Inventaire générale_FP': cluster_Inventairegnrale_FP_16,'<img src="legend/Capturessandre_FP_15.png" /> Captures sandre_FP': cluster_Capturessandre_FP_15,'<img src="legend/Capturestruite_FP_14.png" /> Captures truite_FP': cluster_Capturestruite_FP_14,'<img src="legend/Capturesbrochet_FP_13.png" /> Captures brochet_FP': cluster_Capturesbrochet_FP_13,'<img src="legend/Capturesautres_FP_12.png" /> Captures autres_FP': cluster_Capturesautres_FP_12,'<img src="legend/Parcourscarnassiers_FPI_11.png" /> Parcours carnassiers_FPI': layer_Parcourscarnassiers_FPI_11,'<img src="legend/Parcourstruites_FPI_10.png" /> Parcours truites_FPI': layer_Parcourstruites_FPI_10,'<img src="legend/Dtectionparcours_FP_9.png" /> Détection parcours_FP': layer_Dtectionparcours_FP_9,'<img src="legend/Rservedepche_FPI_8.png" /> Réserve de pêche_FPI': layer_Rservedepche_FPI_8,'<img src="legend/Pchelectrique_Sandre_FPI_7.png" /> Pêche électrique_Sandre_FPI': cluster_Pchelectrique_Sandre_FPI_7,'<img src="legend/Pchelectrique_Truite_FPI_6.png" /> Pêche électrique_Truite_FPI': cluster_Pchelectrique_Truite_FPI_6,'<img src="legend/Pchelectrique_Brochet_FPI_5.png" /> Pêche électrique_Brochet_FPI': cluster_Pchelectrique_Brochet_FPI_5,'<img src="legend/Obstaclescoulement_4.png" /> Obstacles à écoulement': layer_Obstaclescoulement_4,'<img src="legend/Coursdeau_3.png" /> Cours d\'eau': layer_Coursdeau_3,'<img src="legend/Limitecommunale_2.png" /> Limite communale': layer_Limitecommunale_2,"Cartes IGN": layer_CartesIGN_1,"Google Satellite": layer_GoogleSatellite_0,}).addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
