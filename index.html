@@ -346,6 +346,10 @@
                 return L.shapeMarker(latlng, style_Pchelectrique_Brochet_FPI_5_0(feature));
             },
         });
+        var cluster_Pchelectrique_Brochet_FPI_5 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_Pchelectrique_Brochet_FPI_5.addLayer(layer_Pchelectrique_Brochet_FPI_5);
+
         bounds_group.addLayer(layer_Pchelectrique_Brochet_FPI_5);
         function pop_Pchelectrique_Truite_FPI_6(feature, layer) {
             layer.on({
@@ -420,6 +424,10 @@
                 return L.shapeMarker(latlng, style_Pchelectrique_Truite_FPI_6_0(feature));
             },
         });
+        var cluster_Pchelectrique_Truite_FPI_6 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_Pchelectrique_Truite_FPI_6.addLayer(layer_Pchelectrique_Truite_FPI_6);
+
         bounds_group.addLayer(layer_Pchelectrique_Truite_FPI_6);
         function pop_Pchelectrique_Sandre_FPI_7(feature, layer) {
             layer.on({
@@ -1489,7 +1497,7 @@
             };
             title.addTo(map);
         var baseMaps = {};
-        L.control.layers(baseMaps,{'<img src="legend/Inventairegnrale_FP_16.png" /> Inventaire générale_FP': cluster_Inventairegnrale_FP_16,'<img src="legend/Capturessandre_FP_15.png" /> Captures sandre_FP': cluster_Capturessandre_FP_15,'<img src="legend/Capturestruite_FP_14.png" /> Captures truite_FP': cluster_Capturestruite_FP_14,'<img src="legend/Capturesbrochet_FP_13.png" /> Captures brochet_FP': cluster_Capturesbrochet_FP_13,'<img src="legend/Capturesautres_FP_12.png" /> Captures autres_FP': cluster_Capturesautres_FP_12,'<img src="legend/Parcourscarnassiers_FPI_11.png" /> Parcours carnassiers_FPI': layer_Parcourscarnassiers_FPI_11,'<img src="legend/Parcourstruites_FPI_10.png" /> Parcours truites_FPI': layer_Parcourstruites_FPI_10,'<img src="legend/Dtectionparcours_FP_9.png" /> Détection parcours_FP': layer_Dtectionparcours_FP_9,'<img src="legend/Rservedepche_FPI_8.png" /> Réserve de pêche_FPI': layer_Rservedepche_FPI_8,'<img src="legend/Pchelectrique_Sandre_FPI_7.png" /> Pêche électrique_Sandre_FPI': cluster_Pchelectrique_Sandre_FPI_7,'<img src="legend/Pchelectrique_Truite_FPI_6.png" /> Pêche électrique_Truite_FPI': layer_Pchelectrique_Truite_FPI_6,'<img src="legend/Pchelectrique_Brochet_FPI_5.png" /> Pêche électrique_Brochet_FPI': layer_Pchelectrique_Brochet_FPI_5,'<img src="legend/Obstaclescoulement_4.png" /> Obstacles à écoulement': layer_Obstaclescoulement_4,'<img src="legend/Coursdeau_3.png" /> Cours d\'eau': layer_Coursdeau_3,'<img src="legend/Limitecommunale_2.png" /> Limite communale': layer_Limitecommunale_2,"Cartes IGN": layer_CartesIGN_1,"Google Satellite": layer_GoogleSatellite_0,}).addTo(map);
+        L.control.layers(baseMaps,{'<img src="legend/Inventairegnrale_FP_16.png" /> Inventaire générale_FP': cluster_Inventairegnrale_FP_16,'<img src="legend/Capturessandre_FP_15.png" /> Captures sandre_FP': cluster_Capturessandre_FP_15,'<img src="legend/Capturestruite_FP_14.png" /> Captures truite_FP': cluster_Capturestruite_FP_14,'<img src="legend/Capturesbrochet_FP_13.png" /> Captures brochet_FP': cluster_Capturesbrochet_FP_13,'<img src="legend/Capturesautres_FP_12.png" /> Captures autres_FP': cluster_Capturesautres_FP_12,'<img src="legend/Parcourscarnassiers_FPI_11.png" /> Parcours carnassiers_FPI': layer_Parcourscarnassiers_FPI_11,'<img src="legend/Parcourstruites_FPI_10.png" /> Parcours truites_FPI': layer_Parcourstruites_FPI_10,'<img src="legend/Dtectionparcours_FP_9.png" /> Détection parcours_FP': layer_Dtectionparcours_FP_9,'<img src="legend/Rservedepche_FPI_8.png" /> Réserve de pêche_FPI': layer_Rservedepche_FPI_8,'<img src="legend/Pchelectrique_Sandre_FPI_7.png" /> Pêche électrique_Sandre_FPI': cluster_Pchelectrique_Sandre_FPI_7,'<img src="legend/Pchelectrique_Truite_FPI_6.png" /> Pêche électrique_Truite_FPI': cluster_Pchelectrique_Truite_FPI_6,'<img src="legend/Pchelectrique_Brochet_FPI_5.png" /> Pêche électrique_Brochet_FPI': cluster_Pchelectrique_Brochet_FPI_5,'<img src="legend/Obstaclescoulement_4.png" /> Obstacles à écoulement': layer_Obstaclescoulement_4,'<img src="legend/Coursdeau_3.png" /> Cours d\'eau': layer_Coursdeau_3,'<img src="legend/Limitecommunale_2.png" /> Limite communale': layer_Limitecommunale_2,"Cartes IGN": layer_CartesIGN_1,"Google Satellite": layer_GoogleSatellite_0,}).addTo(map);
         setBounds();
         </script>
     </body>
